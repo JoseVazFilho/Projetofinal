@@ -1,0 +1,1 @@
+// Frontend funcional com login, upload e filtros
