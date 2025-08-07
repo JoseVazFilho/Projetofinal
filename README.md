@@ -37,9 +37,9 @@ Aplicação completa para registro e gerenciamento de objetos perdidos, com func
 
 ---
 ## Pré Requisito Softwares
-Visual Studio Code > https://code.visualstudio.com/
-Nodejs > https://nodejs.org/
-Postgresql > https://www.postgresql.org/
+- Visual Studio Code > https://code.visualstudio.com/
+- Nodejs > https://nodejs.org/
+- Postgresql > https://www.postgresql.org/
 
 ## 🛠️ Instalação
 
@@ -56,6 +56,10 @@ cd achados-perdidos
 ```bash
 cd backend
 npm install
+```
+##Caso o camando acima apresente erro "UnauthorizedAccess" ou "scripts foi desabilitada neste sistema" rode o seguinte comando no proprio terminal do Visual Studio Code
+```bash
+Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
 ```
 
 ### 📄 Crie um arquivo .env com:
