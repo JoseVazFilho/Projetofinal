@@ -101,8 +101,8 @@ As imagens dos itens são armazenadas na pasta uploads/ no backend e servidas pu
 ---
 
 ##👤 Autores
-Jose Vaz Filho
-Guilherme Oliveira Santos
+- Jose Vaz Filho
+- Guilherme Oliveira Santos
 
 ---
 
