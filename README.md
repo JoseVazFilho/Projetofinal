@@ -44,28 +44,45 @@ Aplicação completa para registro e gerenciamento de objetos perdidos, com func
 ```bash
 git clone https://github.com/seu-usuario/achados-perdidos.git
 cd achados-perdidos
+```
+
+---
 
 ## ⚙️ 2. Configuração do Backend
+```bash
 cd backend
 npm install
+```
 
-## 📄 Crie um arquivo .env com:
+### 📄 Crie um arquivo .env com:
+```env
 DATABASE_URL="postgresql://usuario:senha@localhost:5432/achados_perdidos"
 JWT_SECRET="segredo123"
 PORT=3000
+```
 
-##🔧 Execute as migrações Prisma:
+### 🔧 Execute as migrações Prisma:
+```bash
 npx prisma migrate dev --name init
+```
 
 ## ▶️ Inicie o servidor:
+
+```bash
 npm run dev
+```
+
+---
 
 ##🌐 3. Configuração do Frontend
+
+```bash
 cd ../frontend
 npm install
 npm run dev
-Acesse: http://localhost:5173
-
+```
+> Acesse: http://localhost:5173
+--- 
 ## 🧪 Endpoints da API
 | Método | Rota           | Protegida | Descrição                    |
 | ------ | -------------- | --------- | ---------------------------- |
@@ -76,10 +93,20 @@ Acesse: http://localhost:5173
 | POST   | /items         | ✅         | Cria novo item com imagem    |
 | PUT    | /items/\:id    | ✅         | Edita um item                |
 
+---
+
 ##🖼️ Uploads
 As imagens dos itens são armazenadas na pasta uploads/ no backend e servidas publicamente.
+
+---
 
 ##👤 Autores
 Jose Vaz Filho
 Guilherme Oliveira Santos
+
+---
+
+## 📄 Licença
+
+MIT License
 
