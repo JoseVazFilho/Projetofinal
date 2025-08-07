@@ -36,6 +36,10 @@ Aplicação completa para registro e gerenciamento de objetos perdidos, com func
 - ✅ Tela de login e logout
 
 ---
+## Pré Requisito Softwares
+Visual Studio Code > https://code.visualstudio.com/
+Nodejs > https://nodejs.org/
+Postgresql > https://www.postgresql.org/
 
 ## 🛠️ Instalação
 
