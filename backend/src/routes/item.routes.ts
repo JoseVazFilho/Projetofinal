@@ -1,12 +1,19 @@
-// src/routes/item.routes.ts
 import { Router } from 'express'
 import multer from 'multer'
 import path from 'path'
 import { authMiddleware } from '../middleware/authMiddleware'
-import { createItem, getItems, getPublicItems, updateItem, deleteItem, toggleItem } from '../controllers/itemController'
+import {
+  createItem,
+  getItems,
+  getPublicItems,
+  updateItem,
+  deleteItem,
+  toggleItem,
+} from '../controllers/itemController'
 
 const router = Router()
 
+// Configuração do Multer para upload em /uploads
 const storage = multer.diskStorage({
   destination: 'uploads/',
   filename: (_, file, cb) => {
@@ -17,13 +24,14 @@ const storage = multer.diskStorage({
 })
 const upload = multer({ storage })
 
+// ROTA PÚBLICA (sem login)
 router.get('/public', getPublicItems)
 
-// protegidas:
+// Rotas protegidas (com JWT)
 router.use(authMiddleware)
 router.get('/', getItems)
-router.post('/', upload.single('imagem'), createItem) // <- upload antes do controller
-router.put('/:id', updateItem)
+router.post('/', upload.single('imagem'), createItem)     // POST multipart
+router.put('/:id', upload.single('imagem'), updateItem)   // PUT multipart (imagem opcional)
 router.delete('/:id', deleteItem)
 router.patch('/:id/toggle', toggleItem)
 

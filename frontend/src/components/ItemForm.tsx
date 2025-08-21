@@ -1,17 +1,21 @@
 import { useEffect, useState } from 'react'
 import axios from 'axios'
 
+type Item = {
+  id: number
+  objeto: string
+  local: string
+  achadoEm: string
+  descricao?: string | null
+  publicado: boolean
+  imagem?: string | null
+  imagemUrl?: string | null
+}
+
 type Props = {
   token: string
   onItemAdded: () => void
-  item?: {
-    id: number
-    objeto: string
-    local: string
-    achadoEm: string
-    descricao?: string | null
-    publicado: boolean
-  } | null
+  item?: Item | null
 }
 
 export default function ItemForm({ token, onItemAdded, item }: Props) {
@@ -21,7 +25,6 @@ export default function ItemForm({ token, onItemAdded, item }: Props) {
   const [descricao, setDescricao] = useState('')
   const [imagem, setImagem] = useState<File | null>(null)
 
-  // Preenche quando for edição
   useEffect(() => {
     if (item) {
       setObjeto(item.objeto || '')
@@ -33,7 +36,7 @@ export default function ItemForm({ token, onItemAdded, item }: Props) {
       setDescricao(item.descricao || '')
       setImagem(null)
     } else {
-      // default para cadastro: data de hoje
+      // default: data de hoje no cadastro
       const now = new Date()
       const yyyyMMdd =
         `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`
@@ -65,7 +68,7 @@ export default function ItemForm({ token, onItemAdded, item }: Props) {
       method: method as any,
       url,
       data: formData,
-      headers: { Authorization: `Bearer ${token}` },
+      headers: { Authorization: `Bearer ${token}` }, // NÃO defina Content-Type manualmente
     })
 
     onItemAdded()
@@ -87,4 +90,3 @@ export default function ItemForm({ token, onItemAdded, item }: Props) {
     </form>
   )
 }
-

@@ -1,6 +1,6 @@
-import express from "express";
-import cors from 'cors';
-import { PrismaClient } from "@prisma/client";
+import express from 'express'
+import cors from 'cors'
+import { PrismaClient } from '@prisma/client'
 import authRoutes from './routes/auth.routes'
 import itemRoutes from './routes/item.routes'
 
@@ -9,7 +9,7 @@ const prisma = new PrismaClient()
 
 app.use(cors())
 app.use(express.json())
-app.use('/uploads', express.static('uploads'))
+app.use('/uploads', express.static('uploads')) // 👈 importante p/ imagens
 
 app.use('/auth', authRoutes)
 app.use('/items', itemRoutes)
