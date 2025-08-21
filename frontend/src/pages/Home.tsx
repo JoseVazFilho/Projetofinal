@@ -6,18 +6,27 @@ import ItemTable from '../components/ItemTable'
 interface Props {
   token: string
   setToken: (token: string | null) => void
-  
 }
 
+type Item = {
+  id: number
+  objeto: string
+  local: string
+  achadoEm: string
+  descricao?: string | null
+  publicado: boolean
+  imagem?: string | null
+  imagemUrl?: string | null
+}
 
 export default function Home({ token, setToken }: Props) {
-  const [items, setItems] = useState([])
+  const [items, setItems] = useState<Item[]>([])
+  const [itemEditando, setItemEditando] = useState<Item | null>(null)
+
   const fetchItems = async () => {
     try {
       const res = await axios.get('http://localhost:3000/items', {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
+        headers: { Authorization: `Bearer ${token}` }
       })
       setItems(res.data)
     } catch (error) {
@@ -26,12 +35,29 @@ export default function Home({ token, setToken }: Props) {
   }
 
   useEffect(() => {
-    fetchItems()
-  }, [])
+    if (token) fetchItems()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [token])
 
   const handleLogout = () => {
     localStorage.removeItem('token')
     setToken(null)
+  }
+  //  EXCLUIR
+  const handleDelete = async (id: number) => {
+    if (!confirm('Deseja excluir este item?')) return
+    await axios.delete(`http://localhost:3000/items/${id}`, {
+      headers: { Authorization: `Bearer ${token}` }
+    })
+    fetchItems()
+  }
+
+  //  PUBLICAR (toggle)
+  const handleToggle = async (id: number) => {
+    await axios.patch(`http://localhost:3000/items/${id}/toggle`, {}, {
+      headers: { Authorization: `Bearer ${token}` }
+    })
+    fetchItems()
   }
 
   return (
@@ -45,8 +71,19 @@ export default function Home({ token, setToken }: Props) {
           Sair
         </button>
       </div>
-      <ItemForm token={token} onItemAdded={fetchItems} />
-      <ItemTable items={items} />
+
+      <ItemForm
+        token={token}
+        onItemAdded={() => { setItemEditando(null); fetchItems() }}
+        item={itemEditando}
+      />
+
+      <ItemTable
+        items={items}
+        onEdit={(item) => setItemEditando(item)}
+        onDelete={handleDelete}
+        onToggle={handleToggle}
+      />
     </div>
   )
 }

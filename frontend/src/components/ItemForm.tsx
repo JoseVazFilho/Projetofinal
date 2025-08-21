@@ -1,36 +1,90 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import axios from 'axios'
 
-export default function ItemForm({ token }: { token: string }) {
-  const [form, setForm] = useState({ objeto: '', local: '', atendimento: '', prateleira: '' })
+type Props = {
+  token: string
+  onItemAdded: () => void
+  item?: {
+    id: number
+    objeto: string
+    local: string
+    achadoEm: string
+    descricao?: string | null
+    publicado: boolean
+  } | null
+}
+
+export default function ItemForm({ token, onItemAdded, item }: Props) {
+  const [objeto, setObjeto] = useState('')
+  const [local, setLocal] = useState('')
+  const [achadoEm, setAchadoEm] = useState('')
+  const [descricao, setDescricao] = useState('')
   const [imagem, setImagem] = useState<File | null>(null)
+
+  // Preenche quando for edição
+  useEffect(() => {
+    if (item) {
+      setObjeto(item.objeto || '')
+      setLocal(item.local || '')
+      const d = item.achadoEm ? new Date(item.achadoEm) : null
+      const yyyyMMdd =
+        d ? `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}` : ''
+      setAchadoEm(yyyyMMdd)
+      setDescricao(item.descricao || '')
+      setImagem(null)
+    } else {
+      // default para cadastro: data de hoje
+      const now = new Date()
+      const yyyyMMdd =
+        `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`
+      setObjeto('')
+      setLocal('')
+      setAchadoEm(yyyyMMdd)
+      setDescricao('')
+      setImagem(null)
+    }
+  }, [item])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+
     const formData = new FormData()
-    Object.entries(form).forEach(([key, val]) => formData.append(key, val))
+    formData.append('objeto', objeto)
+    formData.append('local', local)
+    formData.append('achadoEm', achadoEm)
+    formData.append('descricao', descricao)
     if (imagem) formData.append('imagem', imagem)
 
-    await axios.post('http://localhost:3000/items', formData, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        'Content-Type': 'multipart/form-data',
-      },
+    const isEdit = Boolean(item?.id)
+    const url = isEdit
+      ? `http://localhost:3000/items/${item!.id}`
+      : 'http://localhost:3000/items'
+    const method = isEdit ? 'put' : 'post'
+
+    await axios({
+      method: method as any,
+      url,
+      data: formData,
+      headers: { Authorization: `Bearer ${token}` },
     })
-    alert('Item cadastrado!')
+
+    onItemAdded()
   }
 
   return (
-    <form onSubmit={handleSubmit} className="grid gap-2">
-      <input className="border p-2" placeholder="Objeto" onChange={e => setForm({ ...form, objeto: e.target.value })} />
-      <input className="border p-2" placeholder="Local" onChange={e => setForm({ ...form, local: e.target.value })} />
-      <input className="border p-2" placeholder="Atendimento (ex: 46875)" onChange={e => setForm({ ...form, atendimento: e.target.value })} />
-      <select className="border p-2" onChange={e => setForm({ ...form, prateleira: e.target.value })}>
-        <option value="">Prateleira</option>
-        <option>A</option><option>B</option><option>C</option><option>D</option><option>E</option>
-      </select>
+    <form onSubmit={handleSubmit} className="grid gap-2 bg-white border rounded p-4 shadow">
+      <h2 className="text-lg font-semibold">{item ? 'Editar item' : 'Cadastrar item'}</h2>
+      <input className="border p-2" placeholder="Objeto" value={objeto} onChange={e => setObjeto(e.target.value)} required />
+      <input className="border p-2" placeholder="Local" value={local} onChange={e => setLocal(e.target.value)} required />
+      <input type="date" className="border p-2" value={achadoEm} onChange={e => setAchadoEm(e.target.value)} required />
+      <input className="border p-2" placeholder="Descrição breve" value={descricao} onChange={e => setDescricao(e.target.value)} />
       <input type="file" onChange={e => setImagem(e.target.files?.[0] ?? null)} />
-      <button className="bg-green-600 text-white px-4 py-2" type="submit">Cadastrar</button>
+      <div className="flex gap-2">
+        <button className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded" type="submit">
+          {item ? 'Salvar alterações' : 'Cadastrar'}
+        </button>
+      </div>
     </form>
   )
 }
+
