@@ -5,6 +5,8 @@ import Header from './components/Header'
 import Footer from './components/Footer'
 import Home from './pages/Home'
 import Login from './pages/Login'
+import Admins from './pages/Admins'
+import RegisterAdmin from './pages/RegisterAdmin'
 import Items from './pages/Items'
 import Public from './pages/Public'
 
@@ -12,6 +14,8 @@ export default function App() {
   const [token, setToken] = useState<string | null>(localStorage.getItem('token'))
 
   const isAuth = Boolean(token)
+  const isAdmin = localStorage.getItem('isAdmin') === 'true'
+
 
   return (
     <Router>
@@ -24,7 +28,8 @@ export default function App() {
 
             {/* Login recebe setToken */}
             <Route path="/login" element={<Login setToken={setToken} />} />
-
+            <Route path="/admins" element={isAuth && isAdmin ? <Admins /> : <Navigate to="/login" />} />
+            <Route path="/register-admin" element={<RegisterAdmin />} />
             {/* Home recebe token e setToken */}
             <Route
               path="/"

@@ -5,22 +5,28 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
 model User {
   id       Int    @id @default(autoincrement())
   email    String @unique
   password String
+  isAdmin  Boolean @default(false)   // NOVO
   items    Item[]
 }
+
 model Item {
-  id          Int      @id @default(autoincrement())
-  objeto      String
-  local       String
-  achadoEm    DateTime
-  descricao   String?
-  publicado   Boolean  @default(true)
-  imagem      String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  userId      Int
-  user        User     @relation(fields: [userId], references: [id])
+  id               Int      @id @default(autoincrement())
+  objeto           String
+  local            String
+  achadoEm         DateTime
+  descricao        String?
+  numeroOcorrencia String?  // NOVO (string curta)
+  publicado        Boolean   @default(true)
+  imagem           String?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+  userId           Int
+  user             User     @relation(fields: [userId], references: [id])
+
+  @@index([publicado, achadoEm])
 }

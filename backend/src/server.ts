@@ -3,6 +3,7 @@ import cors from 'cors'
 import { PrismaClient } from '@prisma/client'
 import authRoutes from './routes/auth.routes'
 import itemRoutes from './routes/item.routes'
+import adminRoutes from './routes/admin.routes'
 
 const app = express()
 const prisma = new PrismaClient()
@@ -13,6 +14,8 @@ app.use('/uploads', express.static('uploads')) // 👈 importante p/ imagens
 
 app.use('/auth', authRoutes)
 app.use('/items', itemRoutes)
+app.use('/admins', adminRoutes)
+
 
 const PORT = process.env.PORT || 3000
 app.listen(PORT, () => {

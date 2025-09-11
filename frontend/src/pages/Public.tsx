@@ -57,9 +57,6 @@ export default function Public() {
       <header className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
         <div>
           <h1 className="text-2xl font-bold">Itens Encontrados (Público)</h1>
-          <p className="text-sm text-gray-600">
-            Veja os itens ainda não devolvidos. Para cadastrar/editar/remover, acesse a área administrativa.
-          </p>
         </div>
 
         <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">

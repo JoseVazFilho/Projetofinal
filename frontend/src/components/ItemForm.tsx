@@ -23,6 +23,7 @@ export default function ItemForm({ token, onItemAdded, item }: Props) {
   const [local, setLocal] = useState('')
   const [achadoEm, setAchadoEm] = useState('')
   const [descricao, setDescricao] = useState('')
+  const [numeroOcorrencia, setNumeroOcorrencia] = useState('')
   const [imagem, setImagem] = useState<File | null>(null)
 
   useEffect(() => {
@@ -34,6 +35,7 @@ export default function ItemForm({ token, onItemAdded, item }: Props) {
         d ? `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}` : ''
       setAchadoEm(yyyyMMdd)
       setDescricao(item.descricao || '')
+      setNumeroOcorrencia((item as any).numeroOcorrencia || '')
       setImagem(null)
     } else {
       // default: data de hoje no cadastro
@@ -44,6 +46,7 @@ export default function ItemForm({ token, onItemAdded, item }: Props) {
       setLocal('')
       setAchadoEm(yyyyMMdd)
       setDescricao('')
+      setNumeroOcorrencia('')
       setImagem(null)
     }
   }, [item])
@@ -56,6 +59,7 @@ export default function ItemForm({ token, onItemAdded, item }: Props) {
     formData.append('local', local)
     formData.append('achadoEm', achadoEm)
     formData.append('descricao', descricao)
+    formData.append('numeroOcorrencia', numeroOcorrencia)
     if (imagem) formData.append('imagem', imagem)
 
     const isEdit = Boolean(item?.id)
@@ -81,6 +85,7 @@ export default function ItemForm({ token, onItemAdded, item }: Props) {
       <input className="border p-2" placeholder="Local" value={local} onChange={e => setLocal(e.target.value)} required />
       <input type="date" className="border p-2" value={achadoEm} onChange={e => setAchadoEm(e.target.value)} required />
       <input className="border p-2" placeholder="Descrição breve" value={descricao} onChange={e => setDescricao(e.target.value)} />
+      <input className="border p-2" placeholder="Número de Ocorrência (ex: 4578909)" value={numeroOcorrencia} onChange={e => setNumeroOcorrencia(e.target.value)} />
       <input type="file" onChange={e => setImagem(e.target.files?.[0] ?? null)} />
       <div className="flex gap-2">
         <button className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded" type="submit">

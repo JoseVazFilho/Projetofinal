@@ -17,10 +17,10 @@ export default function Login({ setToken }: LoginProps) {
     setLoading(true); setError(null)
 
     try {
-      const { data } = await axios.post('http://localhost:3000/auth/login', { email, password })
+      const { data } = await axios.post('/auth/login', { email, password })
       localStorage.setItem('token', data.token)
+      localStorage.setItem('isAdmin', data.isAdmin ? 'true' : 'false') // NOVO
       setToken(data.token)
-      
       navigate("/")   // 👈 redireciona para Home após login
     } catch (err: any) {
       setError('Falha no login. Verifique e-mail/senha.')

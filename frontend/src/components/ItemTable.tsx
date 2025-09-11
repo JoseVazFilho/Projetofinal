@@ -29,8 +29,9 @@ export default function ItemTable({ items, onEdit, onDelete, onToggle }: Props) 
             <th className="border px-3 py-2">Local</th>
             <th className="border px-3 py-2">Achado Em</th>
             <th className="border px-3 py-2">Descrição</th>
-            <th className="border px-3 py-2">Publicado</th>
+            <th className="border px-3 py-2">Nº Ocorrência</th>
             <th className="border px-3 py-2">Imagem</th>
+            <th className="border px-3 py-2">Publicado</th>            
             <th className="border px-3 py-2">Ações</th>
           </tr>
         </thead>
@@ -51,6 +52,15 @@ export default function ItemTable({ items, onEdit, onDelete, onToggle }: Props) 
                   {item.achadoEm ? new Date(item.achadoEm).toLocaleDateString() : '—'}
                 </td>
                 <td className="border px-3 py-2">{item.descricao || '—'}</td>
+                <td className="border px-3 py-2">{(item as any).numeroOcorrencia || '—'}</td>
+                
+                <td className="border px-3 py-2">
+                  {imgSrc ? (
+                    <img src={imgSrc} className="h-10 object-contain" />
+                  ) : (
+                    <span className="text-xs text-gray-500">Sem imagem</span>
+                  )}
+                </td>
                 <td className="border px-3 py-2">
                   <span
                     className={`px-2 py-1 rounded text-xs ${
@@ -61,33 +71,29 @@ export default function ItemTable({ items, onEdit, onDelete, onToggle }: Props) 
                   </span>
                 </td>
                 <td className="border px-3 py-2">
-                  {imgSrc ? (
-                    <img src={imgSrc} className="h-10 object-contain" />
-                  ) : (
-                    <span className="text-xs text-gray-500">Sem imagem</span>
-                  )}
-                </td>
-                <td className="border px-3 py-2 space-x-2">
-                  <button
-                    className="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded"
-                    onClick={() => onToggle(item.id)}
-                    title={item.publicado ? 'Desativar publicação' : 'Ativar publicação'}
-                  >
-                    PUBLICAR
-                  </button>
-                  <button
-                    className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded"
-                    onClick={() => onEdit(item)}
-                  >
-                    EDITAR
-                  </button>
-                  <button
-                    className="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded"
-                    onClick={() => onDelete(item.id)}
-                  >
-                    EXCLUIR
-                  </button>
-                </td>
+  <div className="flex flex-nowrap gap-2">
+    <button
+      className="bg-yellow-500 hover:bg-yellow-600 text-white px-2 py-1 text-xs rounded"
+      onClick={() => onToggle(item.id)}
+      title={item.publicado ? 'Desativar publicação' : 'Ativar publicação'}
+    >
+      PUBLICAR
+    </button>
+    <button
+      className="bg-blue-600 hover:bg-blue-700 text-white px-2 py-1 text-xs rounded"
+      onClick={() => onEdit(item)}
+    >
+      EDITAR
+    </button>
+    <button
+      className="bg-red-600 hover:bg-red-700 text-white px-2 py-1 text-xs rounded"
+      onClick={() => onDelete(item.id)}
+    >
+      EXCLUIR
+    </button>
+  </div>
+</td>
+
               </tr>
             )
           })}

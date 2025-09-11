@@ -13,24 +13,17 @@ interface AuthenticatedRequest extends Request {
  */
 export const createItem = async (req: AuthenticatedRequest, res: Response) => {
   try {
-    const { objeto, local, achadoEm, descricao } = req.body
+    const { objeto, local, achadoEm, descricao, numeroOcorrencia } = req.body
     const file = req.file
     const userPayload = req.user || {}
     const userId = userPayload.userId || userPayload.id
 
-    if (!userId) {
-      return res.status(400).json({ message: 'Usuário não identificado a partir do token.' })
-    }
-    if (!objeto || !local) {
-      return res.status(400).json({ message: 'Campos "objeto" e "local" são obrigatórios.' })
-    }
-    if (!achadoEm) {
-      return res.status(400).json({ message: 'Campo "achadoEm" (data) é obrigatório.' })
-    }
+    if (!userId) return res.status(400).json({ message: 'Usuário não identificado.' })
+    if (!objeto || !local) return res.status(400).json({ message: 'Campos "objeto" e "local" são obrigatórios.' })
+    if (!achadoEm) return res.status(400).json({ message: 'Campo "achadoEm" (data) é obrigatório.' })
+
     const dt = new Date(achadoEm)
-    if (isNaN(dt.getTime())) {
-      return res.status(400).json({ message: 'Data "achadoEm" inválida. Use YYYY-MM-DD.' })
-    }
+    if (isNaN(dt.getTime())) return res.status(400).json({ message: 'Data "achadoEm" inválida. Use YYYY-MM-DD.' })
 
     const imagem = file ? file.filename : null
 
@@ -40,12 +33,12 @@ export const createItem = async (req: AuthenticatedRequest, res: Response) => {
         local,
         achadoEm: dt,
         descricao: descricao || null,
+        numeroOcorrencia: numeroOcorrencia || null,  // NOVO
         publicado: true,
-        imagem,        // se seu modelo usa "imagemUrl", troque aqui e na listagem
+        imagem,
         userId: Number(userId),
       },
     })
-
     res.status(201).json(item)
   } catch (error) {
     console.error('Erro ao criar item:', error)
@@ -77,34 +70,29 @@ export const getPublicItems = async (_req: Request, res: Response) => {
  */
 export const updateItem = async (req: Request, res: Response) => {
   const { id } = req.params
-  const body = req.body || {} // evita destructuring em undefined
-  const { objeto, local, achadoEm, descricao } = body
+  const body = req.body || {}
+  const { objeto, local, achadoEm, descricao, numeroOcorrencia } = body
   const file = req.file
 
   try {
     const data: any = {}
-
     if (typeof objeto !== 'undefined') data.objeto = objeto
     if (typeof local !== 'undefined') data.local = local
     if (typeof descricao !== 'undefined') data.descricao = descricao
+    if (typeof numeroOcorrencia !== 'undefined') data.numeroOcorrencia = numeroOcorrencia  // NOVO
 
     if (typeof achadoEm !== 'undefined') {
       const dt = new Date(achadoEm)
-      if (isNaN(dt.getTime())) {
-        return res.status(400).json({ message: 'Data "achadoEm" inválida.' })
-      }
+      if (isNaN(dt.getTime())) return res.status(400).json({ message: 'Data "achadoEm" inválida.' })
       data.achadoEm = dt
     }
 
-    if (file) {
-      data.imagem = file.filename // or imagemUrl se for seu campo
-    }
+    if (file) data.imagem = file.filename
 
     const updated = await prisma.item.update({
       where: { id: Number(id) },
       data,
     })
-
     res.json(updated)
   } catch (err) {
     console.error('Erro ao atualizar item:', err)
